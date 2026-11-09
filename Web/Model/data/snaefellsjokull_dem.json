@@ -1,0 +1,18 @@
+{
+  "name": "Snæfellsjökull",
+  "width": 791,
+  "height": 830,
+  "pixel_m": 10.0,
+  "min_m": 194.76,
+  "max_m": 1438.25,
+  "nodata": -9999.0,
+  "crs": "EPSG:3057",
+  "bounds": {
+    "left": 269760.0,
+    "bottom": 483450.0,
+    "right": 277670.0,
+    "top": 491750.0
+  },
+  "layout": "float32 little-endian, row-major, first row = north edge, west to east",
+  "source": "ÍslandsDEM v1.0 (10 m), Landmælingar Íslands / ArcticDEM"
+}

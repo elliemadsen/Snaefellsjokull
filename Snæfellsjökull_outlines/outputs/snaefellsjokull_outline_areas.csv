@@ -1,0 +1,12 @@
+year,label,acq_date,source,analyst,layer,n_polygons,glacier,glims_id,area_km2,change_km2,pct_of_first
+1890,~1890,1890-01-01,geomorphology,David Evans,glaciology:glacierpolygon_lia,1,Snæfellsjökull,G336220E64811N,24.967,,100.0
+1945,1945,1945-09-16,AMS aerial images,Joaquín Belart,glaciology:glacierpolygon_ams,1,Snæfellsjökull,G336220E64811N,13.865,-11.102,55.5
+1979,1979,1979-07-22,aerial images NLSI,Joaquin Belart,glaciology:glacierpolygon_misc_1970s,1,Snæfellsjökull,G336220E64811N,13.902,0.037,55.7
+1999,1999,1999-08-08,aerial images Loftmyndir ehf,Hrafnhildur Hannesdóttir,glaciology:glacierpolygon_ca_2000,2,Snæfellsjökull,G336220E64811N,12.657,-1.245,50.7
+2008,2008,2008-09-02,lidar,Joaquin Belart,glaciology:glacierpolygon_ipy,1,Snæfellsjökull,G336220E64811N,10.087,-2.57,40.4
+2014,2014,2014-10-07,ArcticDEM,Joaqu�n/Oddur Belart/Sigur�sson,glaciology:glacierpolygon_lm_2014,1,Snæfellsjökull,G336220E64811N,9.239,-0.848,37.0
+2017,2017,2017-07-27,Aerial images Loftmyndir ehf,Oddur Sigurðsson,glaciology:glacierpolygon_sent2_2017,1,Snæfellsjökull,G336220E64811N,9.03,-0.209,36.2
+2019,2019,2019-09-30,Sentinel-2A,Hrafnhildur Hannesdóttir,glaciology:glacierpolygon_sent2_2019,1,Snæfellsjökull,G336220E64811N,8.72,-0.31,34.9
+2021,2021,2021-08-13,Sentinel-2A,Hrafnhildur Hannesdóttir,glaciology:glacierpolygon_sent2_2021,2,Snæfellsjökull,G336220E64811N,8.622,-0.098,34.5
+2023,2023,2023-08-24,Sentinel-2A,Hrafnhildur Hannesdóttir,glaciology:glacierpolygon_sent2_2023,2,Snæfellsjökull,G336220E64811N,8.252,-0.37,33.1
+2025,2025,2025-09-03,Sentinel-2A,Hrafnhildur Hannesdóttir,glaciology:glacierpolygon_sent2_2025,2,Snæfellsjökull,G336220E64811N,7.827,-0.425,31.3

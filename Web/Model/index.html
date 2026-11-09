@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snæfellsjökull DEM</title>
+  <style>
+    :root {
+      --fg: #000;
+      --bg: #fff;
+      --muted: #8a8a8a;
+      --line: #d4d4d4;
+      --outline: #e10600;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); }
+    body { font: 13px/1.4 -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; overflow: hidden; }
+    #view { position: fixed; inset: 0; }
+    #panel {
+      position: fixed; top: 16px; left: 16px; width: 230px; padding: 16px;
+      background: rgba(255, 255, 255, 0.92); border: 1px solid var(--fg);
+    }
+    h1 { margin: 0 0 14px; font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+    .row { margin: 12px 0 0; }
+    .label { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .modes { display: flex; border: 1px solid var(--fg); }
+    .modes label { flex: 1; text-align: center; padding: 5px 0; cursor: pointer; user-select: none; }
+    .modes label + label { border-left: 1px solid var(--fg); }
+    .modes input { display: none; }
+    .modes input:checked + span { font-weight: 600; }
+    .modes label:has(input:checked) { background: var(--fg); color: var(--bg); }
+    input[type=range] { width: 100%; accent-color: var(--fg); margin: 0; }
+    .toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .toggle input { margin: 0; accent-color: var(--outline); }
+    .year-label { margin: 10px 0 4px; }
+    #outline-year { font-weight: 600; }
+    .ends { display: flex; justify-content: space-between; margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .source { min-height: 2.8em; margin-top: 4px; color: var(--muted); font-size: 11px; }
+    #outline-slider { accent-color: var(--outline); }
+    #outlines-row.off .year-label, #outlines-row.off #outline-slider,
+    #outlines-row.off .ends, #outlines-row.off .source { opacity: 0.35; }
+    #credit { position: fixed; right: 16px; bottom: 12px; color: var(--muted); font-size: 11px; text-align: right; }
+    #message {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      padding: 32px; text-align: center; white-space: pre-line;
+    }
+    @media (max-width: 520px) {
+      #panel { top: auto; bottom: 36px; left: 16px; right: 16px; width: auto; }
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="view"></div>
+
+  <div id="panel" hidden>
+    <h1>Snæfellsjökull</h1>
+
+    <div class="row">
+      <div class="modes">
+        <label><input type="radio" name="mode" value="shaded" checked><span>Shaded</span></label>
+        <label><input type="radio" name="mode" value="wireframe"><span>Wireframe</span></label>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="label"><span>Vertical exaggeration</span><span id="exag-value"></span></div>
+      <input id="exag" type="range" min="1" max="3" step="0.1" value="1">
+    </div>
+
+    <div class="row">
+      <div class="label"><span>Detail</span><span id="detail-value"></span></div>
+      <input id="detail" type="range" min="0" max="3" step="1" value="3">
+    </div>
+
+    <div class="row" id="outlines-row" hidden>
+      <label class="toggle"><input id="outlines-on" type="checkbox" checked><span>Glacier outlines</span></label>
+      <div class="label year-label"><span id="outline-year"></span><span id="outline-area"></span></div>
+      <input id="outline-slider" type="range" min="0" step="1">
+      <div class="ends"><span id="slider-first"></span><span id="slider-last"></span></div>
+      <div class="source" id="outline-source"></div>
+    </div>
+  </div>
+
+  <div id="credit">Terrain: ÍslandsDEM v1.0, Landmælingar Íslands, built from ArcticDEM · Outlines: Veðurstofa Íslands, CC BY 4.0</div>
+  <div id="message">Loading elevation data…</div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

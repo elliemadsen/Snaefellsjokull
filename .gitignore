@@ -1,0 +1,8 @@
+# macOS / editors
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+
+# Full-resolution aerial photo crops (59–191 MB each). aerial_photos.ipynb downloads them again;
+# the *_preview.png files next to them are kept.
+Snæfellsjökull_imagery/outputs/aerial/*.tif

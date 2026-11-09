@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snæfellsjökull Videos</title>
+  <style>
+    :root {
+      --fg: #000;
+      --bg: #fff;
+      --muted: #8a8a8a;
+      --outline: #e10600;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: #000; color: var(--fg); }
+    body { font: 13px/1.4 -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; overflow: hidden; }
+    [hidden] { display: none !important; }
+
+    /* Video grid: fills the window, every tile cropped to fill its cell */
+    #grid { position: fixed; inset: 0; display: grid; }
+    .tile { position: relative; overflow: hidden; background: #000; }
+    .tile iframe { position: absolute; top: 50%; left: 50%; border: 0; transform: translate(-50%, -50%); }
+
+    /* 3D overlay: transparent canvas over the videos */
+    #view { position: fixed; inset: 0; z-index: 1; }
+
+    /* Hidden menu: an invisible corner button (or the M key) opens it */
+    #menu-button {
+      position: fixed; top: 0; left: 0; z-index: 3; width: 48px; height: 48px; padding: 0;
+      border: 0; background: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0;
+      transition: opacity 0.2s;
+    }
+    #menu-button:hover, #menu-button:focus-visible { opacity: 0.8; }
+    #menu {
+      position: fixed; top: 16px; left: 16px; z-index: 2; width: 250px; max-height: calc(100% - 32px);
+      overflow-y: auto; padding: 16px; background: rgba(255, 255, 255, 0.94); border: 1px solid var(--fg);
+    }
+    h1 { margin: 0 0 14px; font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+    .row { margin: 12px 0 0; }
+    .label { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .modes { display: flex; border: 1px solid var(--fg); }
+    .modes label { flex: 1; text-align: center; padding: 5px 0; cursor: pointer; user-select: none; }
+    .modes label + label { border-left: 1px solid var(--fg); }
+    .modes input { display: none; }
+    .modes input:checked + span { font-weight: 600; }
+    .modes label:has(input:checked) { background: var(--fg); color: var(--bg); }
+    input[type=range] { width: 100%; accent-color: var(--fg); margin: 0; }
+    .toggle { display: flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+    .toggle input { margin: 0; accent-color: var(--fg); }
+    #outlines-on, #outline-slider { accent-color: var(--outline); }
+    .year-label { margin: 10px 0 4px; }
+    #outline-year { font-weight: 600; }
+    .ends { display: flex; justify-content: space-between; margin-top: 2px; color: var(--muted); font-size: 11px; }
+    .source { min-height: 2.8em; margin-top: 4px; color: var(--muted); font-size: 11px; }
+    #outlines-row.off .year-label, #outlines-row.off #outline-slider,
+    #outlines-row.off .ends, #outlines-row.off .source { opacity: 0.35; }
+    #panel { margin-top: 4px; padding-left: 10px; border-left: 1px solid var(--fg); }
+    #menu.overlay-off #panel { opacity: 0.35; pointer-events: none; }
+    #message { margin-top: 12px; color: var(--muted); font-size: 11px; white-space: pre-line; }
+    .credits { margin-top: 16px; padding-top: 10px; border-top: 1px solid #d4d4d4; color: var(--muted); font-size: 11px; }
+    .credits p { margin: 0 0 6px; }
+    .credits summary { cursor: pointer; }
+    .credits ol { margin: 6px 0 0; padding-left: 18px; }
+    .credits a { color: inherit; }
+    .hint { margin-top: 10px; color: var(--muted); font-size: 11px; }
+    @media (max-width: 520px) {
+      #menu { top: auto; bottom: 16px; left: 16px; right: 16px; width: auto; max-height: 70%; }
+    }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script>
+    // Settings for the 3D viewer in ../Model/main.js: transparent background, white wireframe, starts as wireframe
+    window.VIEWER_OPTIONS = { background: null, wireframeColor: '#ffffff', mode: 'wireframe' };
+  </script>
+</head>
+<body>
+  <div id="grid"></div>
+  <div id="view"></div>
+
+  <button id="menu-button" type="button" aria-label="Menu" aria-controls="menu" aria-expanded="false">≡</button>
+
+  <div id="menu" hidden>
+    <h1>Snæfellsjökull</h1>
+
+    <label class="toggle"><input id="overlay-on" type="checkbox" checked><span>3D overlay</span></label>
+
+    <!-- The 3D viewer's controls: same ids as in ../Model/index.html, so main.js drives them -->
+    <div id="panel" hidden>
+      <div class="row">
+        <div class="modes">
+          <label><input type="radio" name="mode" value="shaded"><span>Shaded</span></label>
+          <label><input type="radio" name="mode" value="wireframe"><span>Wireframe</span></label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label"><span>Vertical exaggeration</span><span id="exag-value"></span></div>
+        <input id="exag" type="range" min="1" max="3" step="0.1" value="1">
+      </div>
+
+      <div class="row">
+        <div class="label"><span>Detail</span><span id="detail-value"></span></div>
+        <input id="detail" type="range" min="0" max="3" step="1" value="3">
+      </div>
+
+      <div class="row" id="outlines-row" hidden>
+        <label class="toggle"><input id="outlines-on" type="checkbox" checked><span>Glacier outlines</span></label>
+        <div class="label year-label"><span id="outline-year"></span><span id="outline-area"></span></div>
+        <input id="outline-slider" type="range" min="0" step="1">
+        <div class="ends"><span id="slider-first"></span><span id="slider-last"></span></div>
+        <div class="source" id="outline-source"></div>
+      </div>
+    </div>
+    <div id="message">Loading elevation data…</div>
+
+    <div class="credits">
+      <p>Terrain: ÍslandsDEM v1.0, Landmælingar Íslands, built from ArcticDEM · Outlines: Veðurstofa Íslands, CC BY 4.0</p>
+      <details>
+        <summary id="video-count">Videos</summary>
+        <ol id="video-list"></ol>
+      </details>
+    </div>
+    <div class="hint">M or the top-left corner opens and closes this menu.</div>
+  </div>
+
+  <script type="module" src="video.js"></script>
+  <script type="module" src="../Model/main.js"></script>
+</body>
+</html>
